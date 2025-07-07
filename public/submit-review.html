@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Leave a Slay Review 💋</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .stars {
+      display: flex;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .star {
+      font-size: 2rem;
+      color: #ccc;
+      transition: color 0.2s ease;
+    }
+    .star.hover,
+    .star.selected {
+      color: #e91e63;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>What's Tea? 💋</h2>
+    <form id="review-form" class="review-form">
+      <label for="type">What are you reviewing?</label>
+      <select id="type" name="type" required>
+        <option value="">Select one</option>
+        <option value="service">Beauty Service</option>
+        <option value="product">Product</option>
+      </select>
+
+      <label for="vendor">Business or Vendor (Instagram handle or website):</label>
+<input type="text" id="vendor" name="vendor" required />
+
+
+      <label>Overall Experience:</label>
+      <div id="rating-stars" class="stars">
+        <span class="star" data-value="1">★</span>
+        <span class="star" data-value="2">★</span>
+        <span class="star" data-value="3">★</span>
+        <span class="star" data-value="4">★</span>
+        <span class="star" data-value="5">★</span>
+      </div>
+      <input type="hidden" id="rating" name="rating" required />
+
+      <label>Customer Service:</label>
+      <div id="service-stars" class="stars">
+        <span class="star" data-value="1">★</span>
+        <span class="star" data-value="2">★</span>
+        <span class="star" data-value="3">★</span>
+        <span class="star" data-value="4">★</span>
+        <span class="star" data-value="5">★</span>
+      </div>
+      <input type="hidden" id="serviceRating" name="serviceRating" required />
+
+      <label for="review">Your Review:</label>
+      <textarea id="review" name="review" rows="5" required></textarea>
+
+      <label for="media">Upload Photo/Video:</label>
+      <input type="file" id="media" name="media" accept="image/*,video/*" />
+
+      <button type="submit" class="btn">Post Review</button>
+      <p id="response-message"></p>
+    </form>
+  </div>
+
+  <!-- Star rating logic -->
+  <script>
+    function setupStarRating(containerId, inputId) {
+      const stars = Array.from(document.querySelectorAll(`#${containerId} .star`));
+      const input = document.getElementById(inputId);
+
+      stars.forEach((star, idx) => {
+        star.addEventListener('mouseover', () => {
+          stars.forEach((s, i) => s.classList.toggle('hover', i <= idx));
+        });
+        star.addEventListener('mouseout', () => {
+          stars.forEach(s => s.classList.remove('hover'));
+        });
+        star.addEventListener('click', () => {
+          input.value = idx + 1;
+          stars.forEach((s, i) => s.classList.toggle('selected', i < input.value));
+        });
+      });
+    }
+
+    setupStarRating('rating-stars', 'rating');
+    setupStarRating('service-stars', 'serviceRating');
+  </script>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp,
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-p0fTFKwmxzcsBBzcgWg5wJp3ft4IdeE",
+      authDomain: "slayrate3.firebaseapp.com",
+      projectId: "slayrate3",
+      storageBucket: "slayrate3.appspot.com",
+      messagingSenderId: "782380810563",
+      appId: "1:782380810563:web:d336edf5359769049b6ff6"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+  
+    let currentUser = null;
+    let currentUsername = null;
+  
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          currentUsername = userDoc.data().username;
+          console.log("Logged in as @" + currentUsername);
+        }
+      } else {
+        alert("Please sign in to submit a review.");
+        window.location.href = "login.html";
+      }
+    });
+  
+    document.getElementById("review-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+  
+      const reviewText = e.target.review.value;
+      const rating = parseInt(e.target.rating.value);
+      const vendor = e.target.vendor.value;
+      const mediaFile = e.target.media.files[0];
+  
+      let mediaUrl = "";
+  
+      if (mediaFile) {
+        const fileRef = ref(storage, `reviews/${Date.now()}_${mediaFile.name}`);
+        await uploadBytes(fileRef, mediaFile);
+        mediaUrl = await getDownloadURL(fileRef);
+      }
+  
+      try {
+        await addDoc(collection(db, "reviews"), {
+          review: reviewText,
+          rating,
+          vendor,
+          mediaUrl,
+          createdAt: serverTimestamp(),
+          postedByUid: currentUser.uid,
+          postedBy: currentUsername
+        });
+  
+        alert("✅ Review submitted!");
+        window.location.href = "main-timeline.html";
+      } catch (error) {
+        console.error("❌ Error submitting review:", error);
+        alert("Error submitting review. Please try again.");
+      }
+    });
+  </script>
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

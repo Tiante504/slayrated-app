@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Slay Rated</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #fff0f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .form-container {
+      background: white;
+      margin-top: 60px;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h2 {
+      color: #e6007e;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .login-form .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #e6007e;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .form-footer a {
+      color: #e6007e;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Welcome Back, Slay Babe 💅</h2>
+
+    <form id="login-form" class="login-form">
+      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <p class="form-footer">
+      Don’t have an account? <a href="sign-up.html">Sign Up</a>
+    </p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-p0fTFKwmxzcsBBzcgWg5wJp3ft4IdeE",
+      authDomain: "slayrate3.firebaseapp.com",
+      projectId: "slayrate3",
+      storageBucket: "slayrate3.appspot.com",
+      messagingSenderId: "782380810563",
+      appId: "1:782380810563:web:d336edf5359769049b6ff6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    document.getElementById("login-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = e.target.email.value;
+      const password = e.target.password.value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Store UID in local storage to retrieve username later
+        localStorage.setItem("uid", user.uid);
+
+        window.location.href = "main-timeline.html";
+      } catch (error) {
+        console.error("❌ Login Error:", error);
+        alert("Login failed: " + error.message);
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+

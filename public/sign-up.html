@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Slay Rated</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #fff0f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .top-nav {
+      width: 100%;
+      background-color: #e6007e;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .form-container {
+      background: white;
+      margin-top: 40px;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .form-container h2 {
+      color: #e6007e;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .signup-form input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .signup-form .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #e6007e;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .form-footer a {
+      color: #e6007e;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="logo">
+      <img src="images/logo.png" alt="SlayRated Logo" class="logo-img" />
+      <span style="font-weight: bold;">SlayRated</span>
+    </div>
+  </nav>
+
+  <div class="form-container">
+    <h2>Create Your Slay Rated Account</h2>
+
+    <form id="signup-form" action="#" method="post" class="signup-form">
+      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="text" name="username" placeholder="Requested Username" required />
+      <input type="text" name="location" placeholder="Your City/Location" required />
+      <input type="password" name="password" placeholder="Create Password" required />
+      <input type="password" name="confirm-password" placeholder="Confirm Password" required />
+      <button type="submit" class="btn">Create Account</button>
+    </form>
+
+    <p class="form-footer">Already have an account? <a href="login.html">Login</a></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-p0fTFKwmxzcsBBzcgWg5wJp3ft4IdeE",
+      authDomain: "slayrate3.firebaseapp.com",
+      projectId: "slayrate3",
+      storageBucket: "slayrate3.appspot.com",
+      messagingSenderId: "782380810563",
+      appId: "1:782380810563:web:d336edf5359769049b6ff6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    document.getElementById("signup-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const email = e.target.email.value;
+      const password = e.target.password.value;
+      const confirmPassword = e.target["confirm-password"].value;
+      const username = e.target.username.value;
+      const location = e.target.location.value;
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          email,
+          username,
+          location,
+          createdAt: new Date()
+        });
+
+        window.location.href = "main-timeline.html";
+      } catch (error) {
+        console.error("❌ Signup Error:", error);
+        alert("Signup failed: " + error.message);
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+

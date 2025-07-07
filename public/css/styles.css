@@ -1,0 +1,233 @@
+/* ===== Global Styles ===== */
+/* At top of submit-review.html (in a <style> block) */
+body {
+  display: block;    /* override the global flex on this page */
+  padding: 20px;
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', sans-serif;
+  background: #fdeef4;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+h1, h2, p {
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Splash Page Styles ===== */
+.splash-container {
+  text-align: center;
+  max-width: 400px;
+  padding: 40px 20px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  margin: auto;
+  margin-top: 40px;
+}
+
+.logo {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.headline {
+  font-size: 28px;
+  color: #e91e63;
+  margin-bottom: 10px;
+}
+
+.subtext {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.btn {
+  background: #e91e63;
+  color: white;
+  padding: 12px;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #d81b60;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid #e91e63;
+  color: #e91e63;
+}
+
+.btn-outline:hover {
+  background: #e91e63;
+  color: white;
+}
+
+/* ===== Form Container ===== */
+.form-container {
+  width: 100%;
+  max-width: 450px;
+  margin: 30px auto;
+  background: #fff;
+  padding: 30px 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.form-container h2 {
+  color: #e91e63;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.review-form select,
+.review-form textarea,
+.review-form input[type="text"],
+.review-form input[type="file"] {
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+}
+
+.review-form label {
+  font-weight: bold;
+  text-align: left;
+  color: #e91e63;
+  margin-top: 10px;
+}
+
+/* ===== Star Rating Styles ===== */
+/* star base + states */
+.stars {
+  display: flex;             /* left→right */
+  gap: 5px;
+  cursor: pointer;
+}
+
+.star {
+  font-size: 2rem;
+  color: #ccc;
+  transition: color 0.2s ease;
+}
+
+.star.hover,
+.star.selected {
+  color: #e91e63;
+}
+
+/* ===== Timeline ===== */
+.timeline-container {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.timeline-header h1 {
+  color: #e91e63;
+  font-size: 24px;
+}
+
+.review-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-card {
+  background: #fdeef4;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.review-card h3 {
+  margin: 0 0 10px;
+  color: #e91e63;
+}
+
+.review-card p {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.timestamp {
+  color: #999;
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 600px) {
+  .form-container,
+  .timeline-container {
+    padding: 15px;
+    margin: 20px;
+    border-radius: 15px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .review-card {
+    padding: 15px;
+  }
+
+  .star {
+    font-size: 1.8rem;
+  }
+}
+
+.username-link {
+  font-weight: bold;
+  color: #e91e63;
+  text-decoration: none;
+}
+
+.username-link:hover {
+  text-decoration: underline;
+}
+
+
